@@ -15,10 +15,12 @@ root.render(
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
-axios.defaults.baseURL = 'http://localhost:3000';
+export const domain = 'jameschan.us';
+
+axios.defaults.baseURL = `http://${domain}:3000`;
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
