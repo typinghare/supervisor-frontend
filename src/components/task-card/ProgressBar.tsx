@@ -94,7 +94,7 @@ export default class ProgressBar extends Component<ProgressBarProps, ProgressBar
   renderEndTimeDisplay = () => (
     <TimeDisplay
       className='ProgressBarRightTimeDisplay'
-      date={this.getEndTimeDate(this.props.duration)}
+      date={this.getEndTimeDate(this.state.duration)}
       flash={parseInt(this.props.stage as string) === Stage.ONGOING}
       sx={{ color: parseInt(this.props.stage as string) === Stage.ONGOING ? 'green' : 'inherit' }}
     />
