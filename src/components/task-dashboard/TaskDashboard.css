@@ -1,0 +1,8 @@
+.ConsoleTaskButtonGroup {
+    display: block;
+    padding-top: 1em;
+}
+
+.ConsoleTaskButtonGroup Button {
+    margin-left: 1em;
+}

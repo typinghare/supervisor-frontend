@@ -1,0 +1,54 @@
+.TaskCardTitle {
+    border-bottom: 1px solid #D5DBDB;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5rem;
+}
+
+.TaskCardSubject {
+    display: inline-block;
+    font-size: 1.5em !important;
+    color: dodgerblue;
+    margin-right: 0.5em;
+}
+
+.TaskCardCategory {
+    display: inline-block;
+    font-size: 0.8em;
+    color: #666666;
+}
+
+.TaskCardDuration {
+    display: inline-block;
+    font-size: 1.25em;
+    color: coral;
+    float: right;
+    padding-top: 0.25em;
+}
+
+.ProgressBarLeftTimeDisplay, .ProgressBarRightTimeDisplay {
+    display: inline-block;
+    width: 4em;
+    text-align: center;
+    font-family: 'Courier New', sans-serif;
+}
+
+.ProgressBarLinearProgress {
+    display: inline-block !important;
+    width: calc(100% - 8em);
+    height: 0.6em !important;
+    border-radius: 0.5em;
+}
+
+.TaskCardComment {
+    padding: 0 !important;
+}
+
+.TaskCardShield {
+    box-shadow: 0 0 14px 9px #d0e7b7;
+}
+
+.TaskCardDetailInfo > p {
+    color: #999999;
+    font-size: 0.8em;
+
+}

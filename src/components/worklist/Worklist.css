@@ -1,0 +1,10 @@
+.WorklistDateLabel {
+    display: inline-block;
+    font-size: 2em;
+    margin: 0 1rem;
+}
+
+.WorklistSelectDateIcon {
+    display: inline-block;
+    cursor: pointer;
+}
