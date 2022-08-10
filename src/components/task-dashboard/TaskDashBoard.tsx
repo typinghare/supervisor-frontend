@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import TaskCard, { TaskCardProps } from '../task-card/TaskCard';
+import { TaskCard, TaskCardProps } from '../task-card/TaskCard';
 import {
   Box,
   Button,
@@ -10,7 +10,7 @@ import {
   DialogTitle,
   Grid,
 } from '@mui/material';
-import { Action, LoadStatus, Stage } from '../../common/enum';
+import { Action, LoadingState, Stage } from '../../common/enum';
 import './TaskDashboard.css';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,14 +19,14 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import PauseIcon from '@mui/icons-material/Pause';
 import { fetchSelectedTask, updateTaskStage } from '../../api/task.api';
 import TaskComment from '../task-comment/TaskComment';
-import { localUser } from '../../common/user';
+import { localUser } from '../../common/local-user';
 
 export interface TaskDashBoardProps {
 }
 
 export interface TaskDashBoardState {
   task?: TaskCardProps;
-  loadStatus: LoadStatus;
+  loadStatus: LoadingState;
   isRemoveDialogShow: boolean;
 }
 
@@ -35,26 +35,19 @@ export default class TaskDashBoard extends Component<TaskDashBoardProps, TaskDas
     super(props);
     this.state = {
       task: undefined,
-      loadStatus: LoadStatus.LOADED,
+      loadStatus: LoadingState.LOADED,
       isRemoveDialogShow: false,
     };
     this.start.bind(this);
   }
 
   loadSelectedTask() {
-    fetchSelectedTask(localUser.userId)
-      .then((response) => {
-        const task = response.data.data;
-        if (!task) {
-        } else {
-          this.setState({
-            task: response.data.data,
-            loadStatus: LoadStatus.LOADED,
-          });
-        }
+    localUser.userId && fetchSelectedTask(localUser.userId)
+      .then((task) => {
+        this.setState({ task: task || this.state.task, loadStatus: LoadingState.LOADED });
       })
       .catch(() => {
-        this.setState({ loadStatus: LoadStatus.FAILED });
+        this.setState({ loadStatus: LoadingState.FAILED });
       });
   }
 
@@ -64,9 +57,9 @@ export default class TaskDashBoard extends Component<TaskDashBoardProps, TaskDas
 
   render = () => {
     switch (this.state.loadStatus) {
-      case LoadStatus.LOADING:
+      case LoadingState.LOADING:
         return <></>;
-      case LoadStatus.LOADED:
+      case LoadingState.LOADED:
         const task = this.state.task;
         if (!task) return <></>;
         return (
@@ -194,7 +187,7 @@ export default class TaskDashBoard extends Component<TaskDashBoardProps, TaskDas
     const task = this.state.task;
     if (task) {
       updateTaskStage(task.id, Action.START).then((response) => {
-        const task = response.data.data
+        const task = response.data.data;
         this.setState({ task });
       });
     }

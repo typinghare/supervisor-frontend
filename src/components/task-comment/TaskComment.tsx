@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { LoadStatus } from '../../common/enum';
+import { LoadingState } from '../../common/enum';
 import { TaskCommentVo } from '../../vo/TaskCommentVo';
 import { fetchComments } from '../../api/task-comment.api';
 import TaskCommentCard from './TaskCommentCard';
@@ -12,7 +12,7 @@ export interface TaskCommentProps {
 
 export interface TaskCommentState {
   commentList?: TaskCommentVo[];
-  loadStatus: LoadStatus;
+  loadStatus: LoadingState;
 }
 
 export default class TaskComment extends Component<TaskCommentProps, TaskCommentState> {
@@ -20,7 +20,7 @@ export default class TaskComment extends Component<TaskCommentProps, TaskComment
     super(props);
     this.state = {
       commentList: undefined,
-      loadStatus: LoadStatus.LOADING,
+      loadStatus: LoadingState.LOADING,
     };
   }
 
@@ -28,16 +28,16 @@ export default class TaskComment extends Component<TaskCommentProps, TaskComment
     fetchComments(this.props.taskId).then((response) => {
       this.setState({
         commentList: response.data.data,
-        loadStatus: LoadStatus.LOADED,
+        loadStatus: LoadingState.LOADED,
       });
     });
   }
 
   render() {
-    if (this.state.loadStatus === LoadStatus.LOADING) {
+    if (this.state.loadStatus === LoadingState.LOADING) {
       // loading comments
       return <></>;
-    } else if (this.state.loadStatus === LoadStatus.LOADED && this.state.commentList) {
+    } else if (this.state.loadStatus === LoadingState.LOADED && this.state.commentList) {
       return <>
         <Button
           variant='text'

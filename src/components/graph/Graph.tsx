@@ -2,9 +2,9 @@ import { Component } from 'react';
 import {
   fetchLastWeekDurationAggregation,
   fetchLastWeekSubjectDuration,
-} from '../../api/statistics';
+} from '../../api/statistics.api';
 import moment from 'moment';
-import { monthMapping } from '../../common/helper';
+import { monthMapping } from '../../common/constant';
 import { Typography } from '@mui/material';
 import { Area, AreaChart, CartesianGrid, Label, Pie, XAxis, YAxis } from 'recharts';
 import { PieChart } from '@mui/icons-material';

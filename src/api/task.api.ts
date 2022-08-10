@@ -1,37 +1,44 @@
 import axios, { AxiosResponse } from 'axios';
 import TaskDto from '../dto/task.dto';
 import { Action } from '../common/enum';
-import { generalRequestHeader } from '../common/user';
+import { localUser } from '../common/local-user';
+import { api } from '../common/api-manager';
+import TaskVo from '../vo/task.vo';
+
+export namespace API {
+
+}
+
+export function updateTaskStage(taskId: number, action: Action): Promise<AxiosResponse> {
+  return axios.put(`supervisor/tasks/${taskId}`, { action }, { headers: localUser.generalRequestHeader() });
+}
 
 /**
  * Create a task.
  * @param taskDto
  */
-export function fetchTaskPaged(taskDto: Partial<TaskDto>): Promise<AxiosResponse> {
-  return axios.get(`/supervisor/tasks`, {
+export function fetchTaskPaged(taskDto: Partial<TaskDto>): Promise<TaskVo[]> {
+  return api(() => axios.get(`/supervisor/tasks`, {
     params: taskDto,
-  });
+  }));
 }
 
-export function fetchSelectedTask(userId: number): Promise<AxiosResponse> {
-  return axios.get(`/supervisor/users/selected-tasks`, {
+export function fetchSelectedTask(userId: number): Promise<TaskVo | null> {
+  return api(() => axios.get(`/supervisor/users/selected-tasks`, {
     params: { userId: userId },
-  });
+  }));
 }
 
-export function updateTaskStage(taskId: number, action: Action): Promise<AxiosResponse> {
-  return axios.put(`supervisor/tasks/${taskId}`, { action }, { headers: generalRequestHeader() });
+
+export function createTask(categoryId: number): Promise<TaskVo> {
+  return api(() => axios.post(`supervisor/tasks`, { categoryId }, { headers: localUser.generalRequestHeader() }));
 }
 
-export function createTask(categoryId: number): Promise<AxiosResponse> {
-  return axios.post(`supervisor/tasks`, { categoryId }, { headers: generalRequestHeader() });
-}
-
-export function switchSelectedTask(taskId: number): Promise<AxiosResponse> {
-  return axios.put(
+export function switchSelectedTask(taskId: number): Promise<void> {
+  return api(() => axios.put(
     `supervisor/users/selected-tasks`,
     { taskId },
-    { headers: generalRequestHeader() }
-  );
+    { headers: localUser.generalRequestHeader() },
+  ));
 }
 

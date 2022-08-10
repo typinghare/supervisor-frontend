@@ -1,17 +1,16 @@
-import { Component } from 'react';
-import TaskCard, { TaskCardProps } from './TaskCard';
+import { FunctionComponent } from 'react';
+import {TaskCard} from './TaskCard';
 import { Box } from '@mui/material';
 import './Taskcard.css';
+import TaskVo from '../../vo/task.vo';
 
 export interface TaskCardShieldProps {
-  task: TaskCardProps;
+  task: TaskVo;
   shine: boolean;
 }
 
-export default class TaskCardShield extends Component<TaskCardShieldProps, any> {
-  render = () => (
-    <Box className={this.props.shine ? 'TaskCardShield' : ''}>
-      <TaskCard {...this.props.task}></TaskCard>
-    </Box>
-  );
-}
+export const TaskCardShield: FunctionComponent<TaskCardShieldProps> = (props) => {
+  return <Box className={props.shine ? 'TaskCardShield' : ''}>
+    <TaskCard {...props.task}></TaskCard>
+  </Box>;
+};

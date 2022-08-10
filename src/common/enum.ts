@@ -68,7 +68,7 @@ export enum Action {
 /**
  * The status of loading data.
  */
-export enum LoadStatus {
+export enum LoadingState {
   PENDING,
   LOADING,
   LOADED,
