@@ -26,9 +26,6 @@ export const Space: FunctionComponent = () => {
   }, []);
 
   const handleChange = (event: React.SyntheticEvent, value: string) => {
-    // const href = window.location.href;
-    // const match = /[^#]*/.exec(href);
-    // if (match) history.push(match[1] + `#${value}`);
     dispatch(changeSpaceTab(value));
   };
 
