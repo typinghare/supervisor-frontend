@@ -20,8 +20,8 @@ root.render(
 
 
 let domain;
-domain = 'localhost';
-// domain = 'jameschan.us';
+// domain = 'localhost';
+domain = 'jameschan.us';
 
 axios.defaults.baseURL = `http://${domain}:3000`;
 
