@@ -55,4 +55,3 @@ const AlertBoard: FunctionComponent = (props) => {
     return <></>;
   }
 };
-;

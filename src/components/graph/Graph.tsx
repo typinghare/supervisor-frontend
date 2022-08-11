@@ -1,13 +1,9 @@
 import { Component } from 'react';
-import {
-  fetchLastWeekDurationAggregation,
-  fetchLastWeekSubjectDuration,
-} from '../../api/statistics.api';
+import { fetchLastWeekDurationAggregation, fetchLastWeekSubjectDuration } from '../../api/statistics.api';
 import moment from 'moment';
 import { monthMapping } from '../../common/constant';
 import { Typography } from '@mui/material';
-import { Area, AreaChart, CartesianGrid, Label, Pie, XAxis, YAxis } from 'recharts';
-import { PieChart } from '@mui/icons-material';
+import { Area, AreaChart, CartesianGrid, Label, XAxis, YAxis } from 'recharts';
 
 type AreaCharDataItem = {
   name: string;
@@ -27,59 +23,6 @@ export interface GraphState {
   areaChartData: AreaCharDataItem[];
   pieChartData: PieCharDataItem[];
 }
-
-const data01 = [
-  {
-    name: 'Group A',
-    value: 400,
-  },
-  {
-    name: 'Group B',
-    value: 300,
-  },
-  {
-    name: 'Group C',
-    value: 300,
-  },
-  {
-    name: 'Group D',
-    value: 200,
-  },
-  {
-    name: 'Group E',
-    value: 278,
-  },
-  {
-    name: 'Group F',
-    value: 189,
-  },
-];
-const data02 = [
-  {
-    name: 'Group A',
-    value: 2400,
-  },
-  {
-    name: 'Group B',
-    value: 4567,
-  },
-  {
-    name: 'Group C',
-    value: 1398,
-  },
-  {
-    name: 'Group D',
-    value: 9800,
-  },
-  {
-    name: 'Group E',
-    value: 3908,
-  },
-  {
-    name: 'Group F',
-    value: 4800,
-  },
-];
 
 export default class Graph extends Component<GraphProps, GraphState> {
   constructor(props: GraphProps) {
@@ -137,58 +80,33 @@ export default class Graph extends Component<GraphProps, GraphState> {
       margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
     >
       <defs>
-        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-          <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+        <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
+          <stop offset='5%' stopColor='#8884d8' stopOpacity={0.8} />
+          <stop offset='95%' stopColor='#8884d8' stopOpacity={0} />
         </linearGradient>
       </defs>
-      <XAxis dataKey="name">
-        <Label position="insideBottom" offset={-10} fill="#666666">
+      <XAxis dataKey='name'>
+        <Label position='insideBottom' offset={-10} fill='#666666'>
           Date
         </Label>
       </XAxis>
       <YAxis>
         <Label
           angle={-90}
-          value="Duration/min"
-          position="insideLeft"
-          fill="#666666"
-          textAnchor="middle"
+          value='Duration/min'
+          position='insideLeft'
+          fill='#666666'
+          textAnchor='middle'
         />
       </YAxis>
-      <CartesianGrid strokeDasharray="3 3" />
+      <CartesianGrid strokeDasharray='3 3' />
       <Area
-        type="monotone"
-        dataKey="durationSum"
-        stroke="#8884d8"
+        type='monotone'
+        dataKey='durationSum'
+        stroke='#8884d8'
         fillOpacity={1}
-        fill="url(#colorUv)"
+        fill='url(#colorUv)'
       />
     </AreaChart>
-  );
-
-  renderPieChart = () => (
-    <PieChart width={730} height={250}>
-      <Pie
-        data={data01}
-        dataKey="value"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        outerRadius={50}
-        fill="#8884d8"
-      />
-      <Pie
-        data={data02}
-        dataKey="value"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        innerRadius={60}
-        outerRadius={80}
-        fill="#82ca9d"
-        label
-      />
-    </PieChart>
   );
 }

@@ -1,0 +1,26 @@
+.ChangelogTitle {
+    display: block;
+    font-size: 2em;
+    border-left: 0.35em solid cornflowerblue;
+    border-bottom: 1px solid cornflowerblue;
+    padding-left: 0.35em;
+}
+
+.ChangelogSection {
+    margin-top: 1em;
+}
+
+.ChangelogSection ul {
+    margin: 0;
+    padding-left: 2em;
+}
+
+.ChangelogSection ul > li {
+    margin: 0.4em 0;
+}
+
+.ChangelogPublishDate {
+    color: #999999;
+    font-size: 0.5em;
+    margin-left: 1em;
+}
