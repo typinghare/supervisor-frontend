@@ -1,15 +1,58 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FunctionComponent } from 'react';
-import './ConsoleTask.css';
-import TaskDashBoard from '../../task-dashboard/TaskDashBoard';
+import './Task.css';
+import { Dashboard } from './Dashboard';
 import { CreateTask } from './CreateTask';
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material';
 import { SwitchTask } from './SwitchTask';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch } from '../../../app/hooks';
+import {
+  setSelectedTask,
+  setSelectedTaskLoadingState,
+  setSubjectList,
+  setSubjectListLoadingState,
+  setTaskList,
+  setTaskListLoadingState,
+} from '../../../app/slice/TaskSlice';
+import { fetchSelectedTask, fetchTaskPaged } from '../../../api/task.api';
+import { getTodayString } from '../../../common/helper';
+import { LoadingState } from '../../../common/enum';
+import { fetchSubjects } from '../../../api/subject.api';
 
 type AccordionPanel = 'taskDashboard' | 'createTask' | 'switchTask';
 
 export const Task: FunctionComponent = () => {
   const [expandedAccordion, setExpandedAccordion] = React.useState<AccordionPanel>('taskDashboard');
+  const { userId: userIdString } = useParams();
+  const userId = parseInt(userIdString as string);
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    dispatch(setTaskListLoadingState(LoadingState.LOADING));
+    fetchTaskPaged({ selectedDate: getTodayString(), userId }).then((taskList) => {
+      dispatch(setTaskList(taskList));
+      dispatch(setTaskListLoadingState(LoadingState.LOADED));
+    }).catch(() => {
+      dispatch(setTaskListLoadingState(LoadingState.FAILED));
+    });
+
+    dispatch(setSelectedTaskLoadingState(LoadingState.LOADING));
+    fetchSelectedTask(userId).then((selectedTask) => {
+      dispatch(setSelectedTaskLoadingState(LoadingState.LOADED));
+      dispatch(setSelectedTask(selectedTask));
+    }).catch(() => {
+      dispatch(setSelectedTaskLoadingState(LoadingState.FAILED));
+    });
+
+    dispatch(setSubjectListLoadingState(LoadingState.LOADING));
+    fetchSubjects(userId).then((subjectList) => {
+      dispatch(setSubjectList(subjectList));
+      dispatch(setSubjectListLoadingState(LoadingState.LOADED));
+    });
+  }, []);
+
 
   function handleChange(panel: AccordionPanel): React.FormEventHandler {
     return () => setExpandedAccordion(panel);
@@ -23,7 +66,7 @@ export const Task: FunctionComponent = () => {
       >
         <Typography className='ConsoleTaskAccordionSummary'>Dashboard</Typography>
       </AccordionSummary>
-      <AccordionDetails><TaskDashBoard /></AccordionDetails>
+      <AccordionDetails><Dashboard /></AccordionDetails>
     </Accordion>
     <Accordion expanded={expandedAccordion === 'createTask'}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={handleChange('createTask')}>

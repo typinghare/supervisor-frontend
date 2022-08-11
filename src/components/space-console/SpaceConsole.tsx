@@ -1,7 +1,6 @@
 import React, { FunctionComponent, SyntheticEvent } from 'react';
 import { Alert, Box, Tab, Tabs } from '@mui/material';
 import { TabContext, TabPanel } from '@mui/lab';
-import './Console.css';
 import { Task } from './task/Task';
 import ConsoleCategory from './console-category/ConsoleCategory';
 import ConsoleSubject from './console-subject/ConsoleSubject';
@@ -37,7 +36,7 @@ export const SpaceConsole: FunctionComponent<SpaceConsoleProps> = (props: SpaceC
       </Tabs>
 
       <TabContext value={tabValue}>
-        <TabPanel value='task' sx={tabPanelStyle}><Task/></TabPanel>
+        <TabPanel value='task' sx={tabPanelStyle}><Task /></TabPanel>
         <TabPanel value='category' sx={tabPanelStyle}><ConsoleCategory /></TabPanel>
         <TabPanel value='subject' sx={tabPanelStyle}><ConsoleSubject /></TabPanel>
       </TabContext>

@@ -1,0 +1,17 @@
+.ConsoleTaskButtonGroup {
+    display: block;
+    padding-top: 1em;
+}
+
+.ConsoleTaskButtonGroup Button {
+    margin-left: 1em;
+}
+
+.TaskCardItem {
+    cursor: pointer;
+}
+
+.ConsoleTaskAccordionSummary {
+    color: coral;
+    font-size: 1.5em;
+}

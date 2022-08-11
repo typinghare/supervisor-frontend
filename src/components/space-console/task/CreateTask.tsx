@@ -14,82 +14,103 @@ import {
 } from '@mui/material';
 import SubjectVo from '../../../vo/subject.vo';
 import CategoryVo from '../../../vo/category.vo';
-import { fetchSubjects } from '../../../api/subject.api';
-import { fetchCategories } from '../../../api/category.api';
 import { LoadingButton } from '@mui/lab';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import { createTask } from '../../../api/task.api';
-import { postComment } from '../../../api/task-comment.api';
 import { LoadingState } from '../../../common/enum';
-import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import {
+  changeCategory,
+  changeComment,
+  changeSubject,
+  selectCategoryList,
+  selectCreateLoadingState,
+  selectInputCategoryId,
+  selectInputComment,
+  selectInputSubjectId,
+  selectSubjectList,
+  selectTaskList,
+  setCategoryList,
+  setCreateLoadingState,
+  setSelectedTask,
+  setSelectedTaskLoadingState,
+  setTaskList,
+} from '../../../app/slice/TaskSlice';
+import { fetchCategories } from '../../../api/category.api';
+import { createTask, fetchSelectedTask } from '../../../api/task.api';
+import { postComment } from '../../../api/task-comment.api';
+import { localUser } from '../../../common/local-user';
+import TaskVo from '../../../vo/task.vo';
+import _ from 'lodash';
 
 export const CreateTask: FunctionComponent = () => {
-  const [subjectList, setSubjectList] = React.useState<SubjectVo[]>([]);
-  const [categoryList, setCategoryList] = React.useState<CategoryVo[]>([]);
-  const [selectedSubject, setSelectedSubject] = React.useState('');
-  const [selectedCategory, setSelectedCategory] = React.useState('');
-  const [inputComment, setInputComment] = React.useState('');
-  const [createLoadingState, setCreateLoadingState] = React.useState<LoadingState>(LoadingState.PENDING);
-  const [showCreatedSnackBar, setShowCreatedSnackBar] = React.useState(false);
+  const subjectList = useAppSelector(selectSubjectList);
+  const categoryList = useAppSelector(selectCategoryList);
+  const inputSubjectId = useAppSelector(selectInputSubjectId);
+  const inputCategoryId = useAppSelector(selectInputCategoryId);
+  const inputComment = useAppSelector(selectInputComment);
+  const createLoadingState = useAppSelector(selectCreateLoadingState);
+  const taskList = useAppSelector(selectTaskList);
+  const dispatch = useAppDispatch();
 
-  const { userId: userIdString } = useParams();
-  const userId = parseInt(userIdString as string);
-
-  function handleSelectedSubjectChange(event: SelectChangeEvent) {
-    const selectedSubject = event.target.value;
-    setSelectedSubject(selectedSubject);
-    setSelectedCategory('');
-    setCategoryList([]);
-
-    // load category list
-    fetchCategories(parseInt(selectedSubject))
-      .then((categoryList) => {
-        setCategoryList(categoryList);
-      });
+  function handleChangeSubject(event: SelectChangeEvent) {
+    const subjectId = parseInt(event.target.value);
+    dispatch(changeSubject(subjectId));
+    fetchCategories(subjectId).then((categoryList) => {
+      dispatch(setCategoryList(categoryList));
+    });
   }
 
-  function handleSelectedCategoryChange(event: SelectChangeEvent) {
-    setSelectedCategory(event.target.value);
+  function handleChangeCategory(event: SelectChangeEvent) {
+    dispatch(changeCategory(event.target.value));
+  }
+
+  function handleChangeComment(event: React.ChangeEvent<HTMLInputElement>) {
+    dispatch(changeComment(event.target.value));
   }
 
   function handleCreate() {
-    setCreateLoadingState(LoadingState.LOADING);
-    createTask(parseInt(selectedCategory)).then((taskVo) => {
-      postComment(taskVo.id, inputComment)
-        .then(() => {
-          setShowCreatedSnackBar(true);
-          setTimeout(() => {
-            setShowCreatedSnackBar(false);
+    createTask(inputCategoryId).then((task) => {
+      postComment(task.id, inputComment)
+        .then((comment) => {
+          // restore the form
+          dispatch(changeSubject(0));
+          dispatch(setCategoryList([]));
+          dispatch(changeCategory(0));
+          dispatch(changeComment(''));
+          dispatch(setCreateLoadingState(LoadingState.LOADED));
+
+          // snackbar close timer
+          setInterval(() => {
+            dispatch(setCreateLoadingState(LoadingState.PENDING));
           }, 3500);
-          formRestore();
+
+          // add the new task to task list
+          task.commentList = [comment];
+          const newTaskList: TaskVo[] = _.concat(taskList, [task]);
+          dispatch(setTaskList(newTaskList));
+
+          // refresh the selected task
+          if (localUser.userId) {
+            dispatch(setSelectedTaskLoadingState(LoadingState.LOADING));
+            fetchSelectedTask(localUser.userId).then((selectedTask) => {
+              dispatch(setSelectedTaskLoadingState(LoadingState.LOADED));
+              dispatch(setSelectedTask(selectedTask));
+            }).catch(() => {
+              dispatch(setSelectedTaskLoadingState(LoadingState.FAILED));
+            });
+          }
         }).catch(() => {
-        setCreateLoadingState(LoadingState.FAILED);
+        dispatch(setCreateLoadingState(LoadingState.FAILED));
       });
     }).catch(() => {
-      setCreateLoadingState(LoadingState.FAILED);
+      dispatch(setCreateLoadingState(LoadingState.FAILED));
     });
   }
-
-  function formRestore() {
-    setCategoryList([]);
-    setSelectedSubject('');
-    setSelectedCategory('');
-    setInputComment('');
-    setCreateLoadingState(LoadingState.PENDING);
-  }
-
-  React.useEffect(() => {
-    // load subject list
-    fetchSubjects(userId).then((subjectList) => {
-      setSubjectList(subjectList);
-    });
-  }, []);
 
   return <Box>
     <Snackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      open={showCreatedSnackBar}
-      onClose={() => null}
+      open={createLoadingState === LoadingState.LOADED}
     >
       <Alert severity='success'>Successfully created the task.</Alert>
     </Snackbar>
@@ -100,8 +121,8 @@ export const CreateTask: FunctionComponent = () => {
           <InputLabel>Subject</InputLabel>
           <Select
             label='Subject'
-            value={selectedSubject}
-            onChange={handleSelectedSubjectChange}
+            value={inputSubjectId === 0 ? '' : String(inputSubjectId)}
+            onChange={handleChangeSubject}
           >
             {subjectList.map((subject: SubjectVo) => (
               <MenuItem value={subject.id} key={subject.id}>{subject.name}</MenuItem>
@@ -112,11 +133,11 @@ export const CreateTask: FunctionComponent = () => {
 
       <Grid item md={4} xs={6}>
         <FormControl fullWidth>
-          <InputLabel>{selectedSubject === '' ? 'Please select a subject' : 'Category'}</InputLabel>
+          <InputLabel>{inputSubjectId === 0 ? 'Please select a subject' : 'Category'}</InputLabel>
           <Select
             label='Category'
-            value={selectedCategory}
-            onChange={handleSelectedCategoryChange}
+            value={inputCategoryId === 0 ? '' : String(inputCategoryId)}
+            onChange={handleChangeCategory}
           >
             {categoryList.map((category: CategoryVo) => (
               <MenuItem value={category.id} key={category.id}>{category.name}</MenuItem>
@@ -131,9 +152,7 @@ export const CreateTask: FunctionComponent = () => {
             label='Comment'
             variant='standard'
             value={inputComment}
-            onChange={(event) => {
-              setInputComment(event.target.value);
-            }}
+            onChange={handleChangeComment}
           />
         </FormControl>
       </Grid>

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import TaskDto from '../dto/task.dto';
 import { Action } from '../common/enum';
 import { localUser } from '../common/local-user';
@@ -9,8 +9,8 @@ export namespace API {
 
 }
 
-export function updateTaskStage(taskId: number, action: Action): Promise<AxiosResponse> {
-  return axios.put(`supervisor/tasks/${taskId}`, { action }, { headers: localUser.generalRequestHeader() });
+export function updateTaskStage(taskId: number, action: Action): Promise<TaskVo> {
+  return api(() => axios.put(`supervisor/tasks/${taskId}`, { action }, { headers: localUser.generalRequestHeader() }));
 }
 
 /**
@@ -29,7 +29,6 @@ export function fetchSelectedTask(userId: number): Promise<TaskVo | null> {
   }));
 }
 
-
 export function createTask(categoryId: number): Promise<TaskVo> {
   return api(() => axios.post(`supervisor/tasks`, { categoryId }, { headers: localUser.generalRequestHeader() }));
 }
@@ -42,3 +41,8 @@ export function switchSelectedTask(taskId: number): Promise<void> {
   ));
 }
 
+export function removeTask(taskId: number): Promise<void> {
+  return api(() => axios.delete(`supervisor/tasks/${taskId}`, {
+    headers: localUser.generalRequestHeader(),
+  }), 500);
+}

@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { localUser } from '../common/local-user';
 import { api } from '../common/api-manager';
+import { TaskCommentVo } from '../vo/TaskCommentVo';
 
 /**
  * Fetch comments of a task.
@@ -10,7 +11,7 @@ export function fetchComments(taskId: number): Promise<AxiosResponse> {
   return axios.get(`supervisor/tasks/${taskId}/comments`);
 }
 
-export function postComment(taskId: number, content: string): Promise<void> {
+export function postComment(taskId: number, content: string): Promise<TaskCommentVo> {
   return api(() => axios.post(
     `supervisor/tasks/${taskId}/comments`,
     {

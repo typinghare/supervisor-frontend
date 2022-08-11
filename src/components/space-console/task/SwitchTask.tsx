@@ -1,42 +1,47 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FunctionComponent } from 'react';
-import { Box, Grid } from '@mui/material';
+import { Alert, Box, Grid } from '@mui/material';
 import { LoadingState } from '../../../common/enum';
-import { fetchSelectedTask, fetchTaskPaged, switchSelectedTask } from '../../../api/task.api';
-import TaskVo from '../../../vo/task.vo';
 import { TaskCardShield } from '../../task-card/TaskCardShield';
 import './Task';
-import { getTodayString } from '../../../common/helper';
-import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import {
+  selectSelectedTask,
+  selectTaskList,
+  selectTaskListLoadingState,
+  setSelectedTask,
+  setSelectedTaskLoadingState,
+} from '../../../app/slice/TaskSlice';
+import { switchSelectedTask } from '../../../api/task.api';
+import _ from 'lodash';
 
 export const SwitchTask: FunctionComponent = () => {
-  const [loadingState, setLoadingState] = React.useState(LoadingState.LOADING);
-  const [taskList, setTaskList] = React.useState<TaskVo[]>([]);
-  const [selectedKey, setSelectedKey] = React.useState(0);
-
-  const { userId: userIdString } = useParams();
-  const userId = parseInt(userIdString as string);
-
-  React.useEffect(() => {
-    fetchTaskPaged({ selectedDate: getTodayString(), userId }).then(
-      (taskList) => {
-        fetchSelectedTask(userId).then((selectedTask) => {
-          setTaskList(taskList);
-          setLoadingState(LoadingState.LOADED);
-          setSelectedKey(selectedTask ? selectedTask.id : 0);
-        });
-      },
-    );
-  });
+  const taskList = useAppSelector(selectTaskList);
+  const selectedTask = useAppSelector(selectSelectedTask);
+  const taskListLoadingState = useAppSelector(selectTaskListLoadingState);
+  const dispatch = useAppDispatch();
 
   function switchTask(taskId: number) {
-    switchSelectedTask(taskId).then(() => {
-      setSelectedKey(taskId);
-    });
+    return () => {
+      dispatch(setSelectedTaskLoadingState(LoadingState.LOADING));
+
+      switchSelectedTask(taskId).then(() => {
+        const newSelectedTask = _.find(taskList, task => task.id === taskId) || null;
+        dispatch(setSelectedTask(newSelectedTask));
+        dispatch(setSelectedTaskLoadingState(LoadingState.LOADED));
+      });
+    };
   }
 
-  if (loadingState === LoadingState.LOADING) {
+  if (taskListLoadingState === LoadingState.LOADING) {
     return <></>;
-  } else if (loadingState === LoadingState.LOADED) {
+  } else if (taskListLoadingState === LoadingState.LOADED) {
+    if (taskList.length === 0) {
+      return <Box>
+        <Alert severity='warning'>User has no task today</Alert>
+      </Box>
+    }
+
     return <Box sx={{ padding: '0 1em' }}>
       <Grid container spacing={2} sx={{ marginTop: '0.25em' }}>
         {taskList.map((task) => (
@@ -46,11 +51,9 @@ export const SwitchTask: FunctionComponent = () => {
             md={6}
             key={task.id}
             className='TaskCardItem'
-            onClick={() => {
-              switchTask(task.id);
-            }}
+            onClick={switchTask(task.id)}
           >
-            <TaskCardShield task={task} shine={task.id === selectedKey} />
+            <TaskCardShield task={task} shine={!!selectedTask && task.id === selectedTask.id} />
           </Grid>
         ))}
       </Grid>

@@ -1,11 +1,13 @@
 import { Stage } from '../common/enum';
 
 export default interface TaskDto {
-  categoryId: number;
-
   userId: number;
+
+  categoryId: number;
 
   stage: string | Stage;
 
   selectedDate: string;
+
+  comment: string;
 }

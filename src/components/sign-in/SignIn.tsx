@@ -11,7 +11,7 @@ import {
   selectUsername,
   setPassword,
   setUsername,
-} from './signInSlice';
+} from '../../app/slice/signInSlice';
 import { signIn } from '../../api/user.api';
 import { localUser } from '../../common/local-user';
 import { useCookies } from 'react-cookie';
@@ -121,7 +121,7 @@ const SubmitButton: FunctionComponent = () => {
         setCookie(CookieKey.USER_ID, localUser.userId, { path: '/supervisor', expires });
         setCookie(CookieKey.TOKEN, localUser.token, { path: '/supervisor', expires });
         setCookie(CookieKey.USERNAME, localUser.username, { path: '/supervisor', expires });
-      }).catch((e) => {
+      }).catch(() => {
         dispatch(alertShow());
         dispatch(setPassword(''));
       });

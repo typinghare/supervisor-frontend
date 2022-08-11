@@ -11,7 +11,7 @@ import { ConsoleWorklist } from '../worklist/Worklist';
 import Graph from '../graph/Graph';
 import { SpaceConsole } from '../space-console/SpaceConsole';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { changeSpaceTab, selectSpaceTab } from './SpaceSlice';
+import { changeSpaceTab, selectSpaceTab } from '../../app/slice/SpaceSlice';
 
 export const Space: FunctionComponent = () => {
   const { userId: userIdString } = useParams();
