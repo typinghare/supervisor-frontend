@@ -69,6 +69,11 @@ export const CreateTask: FunctionComponent = () => {
   }
 
   function handleCreate() {
+    if (!inputCategoryId || isNaN(inputCategoryId)) {
+      // User has to select a category first
+      return;
+    }
+
     createTask(inputCategoryId).then((task) => {
       postComment(task.id, inputComment)
         .then((comment) => {

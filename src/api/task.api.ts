@@ -30,6 +30,10 @@ export function fetchSelectedTask(userId: number): Promise<TaskVo | null> {
 }
 
 export function createTask(categoryId: number): Promise<TaskVo> {
+  if (!categoryId) {
+    throw new Error('Not yet select a category!');
+  }
+
   return api(() => axios.post(`supervisor/tasks`, { categoryId }, { headers: localUser.generalRequestHeader() }));
 }
 

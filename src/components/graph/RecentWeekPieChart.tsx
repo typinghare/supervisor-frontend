@@ -34,11 +34,6 @@ export const RecentWeekPieChart: FunctionComponent = () => {
   if (pieChartDataLoadingState === LoadingState.LOADING) {
     return <></>;
   } else if (pieChartDataLoadingState === LoadingState.LOADED) {
-    // return <PieChart width={450} height={275}>
-    //   <Pie data={pieChartData} nameKey='subjectName' dataKey='durationSum' outerRadius={80} fill='#82ca9d'
-    //        label />
-    // </PieChart>;
-
     return <Box>
       <Chart type='donut' series={durationSumList} options={{
         labels: subjectList,
