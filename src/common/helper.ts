@@ -19,7 +19,7 @@ export const getDate = function(dateString: string): Date {
  */
 export const getFormalDate = function(date: Date): string {
   const monthString = monthMapping[date.getMonth()];
-  return `${monthString} ${date.getDate()}, ${date.getFullYear()}`;
+  return `${monthString} ${date.getDate()}`;
 };
 
 export const parseEnum = function(enumString: any): number {

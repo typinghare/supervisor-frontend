@@ -2,11 +2,13 @@ import React, { FunctionComponent } from 'react';
 import { Box, Card, CardActions, CardContent, Collapse, Typography } from '@mui/material';
 import './Taskcard.css';
 import { Stage } from '../../common/enum';
-import { ExpandMore } from './expand-more/ExpandMore';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { TaskCommentVo } from '../../vo/TaskCommentVo';
 import { ProgressBar } from './ProgressBar';
-import { getDateString, parseEnum } from '../../common/helper';
+import { parseEnum } from '../../common/helper';
+import { ExpandIcon } from '../expand-icon/ExpandIcon';
+import moment from 'moment';
+import { monthMapping } from '../../common/constant';
 
 export interface TaskCardProps {
   id: number;
@@ -52,20 +54,26 @@ export const TaskCard: FunctionComponent<TaskCardProps> = (props) => {
     setExpanded(!expanded);
   }
 
-  function ExpandedContent() {
-    return <Box className='TaskCardDetailInfo'>
-      <p>created time: {getDateString(props.createdAt)}</p>
-      {props.lastResumeAt && (
-        <p>last resume time: {getDateString(props.lastResumeAt)}</p>
-      )}
-    </Box>;
-  }
-
   function Title() {
     return <Box className='TaskCardTitle'>
       <Box className='TaskCardSubject'>{props.subjectName}</Box>
       <Box className='TaskCardCategory'>{props.categoryName}</Box>
       <Box className='TaskCardDuration'>{getRightSideString()}</Box>
+    </Box>;
+  }
+
+  function dateTimeString(date: Date): string {
+    const m = moment(date);
+    const time = m.format('HH:MM');
+    const month = monthMapping[m.month()];
+    return `${time}, ${month} ${m.date()}, ${m.year()}`;
+  }
+
+  function TaskCardExpansion() {
+    return <Box className='TaskCardDetailInfo'>
+      <p>Create - {dateTimeString(props.createdAt)}</p>
+      {props.lastResumeAt && <p>Last resume - {dateTimeString(props.lastResumeAt)}</p>}
+      {props.endedAt && <p>End - {dateTimeString(props.endedAt)}</p>}
     </Box>;
   }
 
@@ -82,13 +90,15 @@ export const TaskCard: FunctionComponent<TaskCardProps> = (props) => {
           {getPinnedComment()}
         </Typography>
 
-        <ExpandMore expanded={expanded} onClick={handleExpandClick}>
+        <ExpandIcon expanded={expanded} onClick={handleExpandClick}>
           <ExpandMoreIcon />
-        </ExpandMore>
+        </ExpandIcon>
       </CardActions>
 
       <Collapse in={expanded} timeout='auto' unmountOnExit>
-        <CardContent sx={{ padding: '0.5em' }}>{ExpandedContent()}</CardContent>
+        <CardContent sx={{ padding: '0 0 0.5em 0.5em !important' }}>
+          <TaskCardExpansion />
+        </CardContent>
       </Collapse>
     </CardContent>
   </Card>;

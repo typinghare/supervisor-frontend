@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { TaskCard } from '../task-card/TaskCard';
 import { LoadingState } from '../../common/enum';
 import { fetchTaskPaged } from '../../api/task.api';
-import { Box, CircularProgress, Dialog, DialogTitle, Grid } from '@mui/material';
+import { Box, CircularProgress, Dialog, Grid } from '@mui/material';
 import './Worklist.css';
 import { getDate, getDateString, getFormalDate, getTodayString } from '../../common/helper';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -50,12 +50,14 @@ export const ConsoleWorklist: FunctionComponent = () => {
       <Box className='WorklistDateLabel'>
         {getFormalDate(getDate(selectedDate))}
       </Box>
+
       <Box className='WorklistSelectDateIcon'>
         <CalendarMonthIcon onClick={handlePickDate} />
       </Box>
 
-      <Dialog open={showDatePicker}>
-        <DialogTitle>Pick a date</DialogTitle>
+      <Dialog open={showDatePicker} onClose={() => {
+        setShowDatePicker(false);
+      }}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <CalendarPicker
             date={getDate(selectedDate)}
@@ -64,7 +66,7 @@ export const ConsoleWorklist: FunctionComponent = () => {
         </LocalizationProvider>
       </Dialog>
 
-      <Grid container spacing={2} mt={1}>
+      <Grid container spacing={2} mt={0}>
         {taskList.map((task) => (
           <Grid item xs={12} md={6} key={task.id}>
             <TaskCard {...task} />

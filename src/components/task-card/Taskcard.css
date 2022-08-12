@@ -47,8 +47,12 @@
     box-shadow: 0 0 14px 9px #d0e7b7;
 }
 
-.TaskCardDetailInfo > p {
-    color: #999999;
-    font-size: 0.8em;
+.TaskCardDetailInfo {
+    display: block;
+}
 
+.TaskCardDetailInfo > p {
+    font-size: 0.8em;
+    font-family: -apple-system, "serif";
+    margin: 0.5em 0;
 }

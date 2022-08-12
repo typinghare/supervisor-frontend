@@ -1,7 +1,10 @@
 .WorklistDateLabel {
     display: inline-block;
-    font-size: 2em;
-    margin: 0 1rem;
+    font-family: "Apple Braille", "ui-sans-serif";
+    font-weight: 900;
+    font-size: 2.75em;
+    color: #738290;
+    margin-right: 0.5em;
 }
 
 .WorklistSelectDateIcon {

@@ -7,13 +7,14 @@ import EqualizerIcon from '@mui/icons-material/Equalizer';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import { TabContext, TabPanel } from '@mui/lab';
 import { ConsoleWorklist } from '../worklist/Worklist';
-import Graph from '../graph/Graph';
+import { Graph } from '../graph/Graph';
 import { SpaceConsole } from '../space-console/SpaceConsole';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { changeSpaceTab, selectSpaceTab } from '../../app/slice/SpaceSlice';
 
 export const Space: FunctionComponent = () => {
   const { userId: userIdString } = useParams();
+  const userId = parseInt(userIdString || '0');
   const spaceTab = useAppSelector(selectSpaceTab);
   const dispatch = useAppDispatch();
 
@@ -29,10 +30,13 @@ export const Space: FunctionComponent = () => {
     dispatch(changeSpaceTab(value));
   };
 
-  if (typeof userIdString == 'string' && !isNaN(parseInt(userIdString))) {
-    const userId = parseInt(userIdString);
+  if (!isNaN(userId) && userId > 0) {
     return (
-      <Container sx={{ padding: { xs: '0 !important' }, fontSize: { xs: '0.75em !important' } }}>
+      <Container
+        sx={{
+          padding: { xs: '0 !important' },
+          fontSize: { md: '1em', sm: '0.85em', xs: '0.75em' },
+        }}>
         <Tabs
           value={spaceTab}
           onChange={handleChange}
@@ -50,9 +54,8 @@ export const Space: FunctionComponent = () => {
             <ConsoleWorklist />
           </TabPanel>
           <TabPanel value='graph' sx={{ padding: { xs: '12px !important' } }}>
-            <Graph userId={userId} />
+            <Graph />
           </TabPanel>
-          {/*<TabPanel value='subject' sx={{ padding: { xs: '12px !important' } }}>Subject</TabPanel>*/}
           <TabPanel value='console' sx={{ padding: { xs: '12px !important' } }}>
             <SpaceConsole />
           </TabPanel>
