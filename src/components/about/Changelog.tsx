@@ -4,10 +4,12 @@ import { Alert, Box, BoxProps, Typography } from '@mui/material';
 import { Changelog_2_0_0 } from './changelog/Changelog_2_0_0';
 import './Changelog.css';
 import { Changelog_2_1_0 } from './changelog/Changelog_2_1_0';
+import { Changelog_2_1_1 } from './changelog/Changelog_2_1_1';
 
 export const Changelog: FunctionComponent = () => {
   return <Box>
     <Alert severity='info' sx={{ marginTop: '1em' }}>
+      <Typography variant='h5'>Statement</Typography>
       <Typography variant='body1' mb={1}>
         The earliest version of <b>Supervisor</b> was developed in 2019 when I was a sophomore student.
         It accompanied me for a half year, and I kept myself self-disciplined with its assistance.
@@ -33,9 +35,15 @@ export const Changelog: FunctionComponent = () => {
       </Typography>
     </Alert>
 
+    <Typography variant='h4' mt={4} sx={{ color: 'dodgerblue' }}>
+      Changelog
+    </Typography>
+
     <Changelog_2_0_0 />
 
     <Changelog_2_1_0 />
+
+    <Changelog_2_1_1 />
   </Box>;
 };
 

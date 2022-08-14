@@ -64,7 +64,7 @@ export const TaskCard: FunctionComponent<TaskCardProps> = (props) => {
 
   function dateTimeString(date: Date): string {
     const m = moment(date);
-    const time = m.format('HH:MM');
+    const time = m.format('HH:mm');
     const month = monthMapping[m.month()];
     return `${time}, ${month} ${m.date()}, ${m.year()}`;
   }
