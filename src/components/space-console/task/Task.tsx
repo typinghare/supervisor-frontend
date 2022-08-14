@@ -7,8 +7,10 @@ import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/
 import { SwitchTask } from './SwitchTask';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useParams } from 'react-router-dom';
-import { useAppDispatch } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
+  selectExpandedAccordion,
+  setExpandedAccordion,
   setSelectedTask,
   setSelectedTaskLoadingState,
   setSubjectList,
@@ -21,13 +23,13 @@ import { getTodayString } from '../../../common/helper';
 import { LoadingState } from '../../../common/enum';
 import { fetchSubjects } from '../../../api/subject.api';
 
-type AccordionPanel = 'taskDashboard' | 'createTask' | 'switchTask';
+export type AccordionPanel = 'taskDashboard' | 'createTask' | 'switchTask';
 
 export const Task: FunctionComponent = () => {
-  const [expandedAccordion, setExpandedAccordion] = React.useState<AccordionPanel>('taskDashboard');
   const { userId: userIdString } = useParams();
   const userId = parseInt(userIdString as string);
   const dispatch = useAppDispatch();
+  const expandedAccordion = useAppSelector(selectExpandedAccordion);
 
   React.useEffect(() => {
     dispatch(setTaskListLoadingState(LoadingState.LOADING));
@@ -55,7 +57,9 @@ export const Task: FunctionComponent = () => {
 
 
   function handleChange(panel: AccordionPanel): React.FormEventHandler {
-    return () => setExpandedAccordion(panel);
+    return () => {
+      dispatch(setExpandedAccordion(panel));
+    };
   }
 
   return <div>

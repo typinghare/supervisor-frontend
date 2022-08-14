@@ -27,10 +27,12 @@ import {
   selectInputCategoryId,
   selectInputComment,
   selectInputSubjectId,
+  selectSelectedTask,
   selectSubjectList,
   selectTaskList,
   setCategoryList,
   setCreateLoadingState,
+  setExpandedAccordion,
   setSelectedTask,
   setSelectedTaskLoadingState,
   setTaskList,
@@ -50,6 +52,7 @@ export const CreateTask: FunctionComponent = () => {
   const inputComment = useAppSelector(selectInputComment);
   const createLoadingState = useAppSelector(selectCreateLoadingState);
   const taskList = useAppSelector(selectTaskList);
+  const selectedTask = useAppSelector(selectSelectedTask);
   const dispatch = useAppDispatch();
 
   function handleChangeSubject(event: SelectChangeEvent) {
@@ -66,6 +69,13 @@ export const CreateTask: FunctionComponent = () => {
 
   function handleChangeComment(event: React.ChangeEvent<HTMLInputElement>) {
     dispatch(changeComment(event.target.value));
+  }
+
+  function handleCommentKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleCreate();
+    }
   }
 
   function handleCreate() {
@@ -96,10 +106,18 @@ export const CreateTask: FunctionComponent = () => {
 
           // refresh the selected task
           if (localUser.userId) {
+            const selectedTaskId = selectedTask ? selectedTask.id : 0;
             dispatch(setSelectedTaskLoadingState(LoadingState.LOADING));
             fetchSelectedTask(localUser.userId).then((selectedTask) => {
               dispatch(setSelectedTaskLoadingState(LoadingState.LOADED));
               dispatch(setSelectedTask(selectedTask));
+              if (selectedTask) {
+                if (selectedTaskId !== selectedTask.id) {
+                  dispatch(setExpandedAccordion('taskDashboard'));
+                } else {
+                  dispatch(setExpandedAccordion('switchTask'));
+                }
+              }
             }).catch(() => {
               dispatch(setSelectedTaskLoadingState(LoadingState.FAILED));
             });
@@ -158,6 +176,7 @@ export const CreateTask: FunctionComponent = () => {
             variant='standard'
             value={inputComment}
             onChange={handleChangeComment}
+            onKeyDown={handleCommentKeyDown}
           />
         </FormControl>
       </Grid>

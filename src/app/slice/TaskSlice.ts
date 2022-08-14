@@ -5,6 +5,7 @@ import { LoadingState } from '../../common/enum';
 import { RootState } from '../store';
 import SubjectVo from '../../vo/subject.vo';
 import CategoryVo from '../../vo/category.vo';
+import { AccordionPanel } from '../../components/space-console/task/Task';
 
 export interface TaskState {
   /**
@@ -42,6 +43,8 @@ export interface TaskState {
   inputComment: string;
 
   createLoadingState: LoadingState;
+
+  expandedAccordion: AccordionPanel;
 }
 
 export const createTaskSlice = createSlice<TaskState, SliceCaseReducers<TaskState>>({
@@ -64,6 +67,8 @@ export const createTaskSlice = createSlice<TaskState, SliceCaseReducers<TaskStat
     inputComment: '',
 
     createLoadingState: LoadingState.PENDING,
+
+    expandedAccordion: 'taskDashboard',
   },
   reducers: {
     setTaskList(state: TaskState, _taskList: PayloadAction<TaskVo[]>) {
@@ -111,9 +116,8 @@ export const createTaskSlice = createSlice<TaskState, SliceCaseReducers<TaskStat
       state.createLoadingState = _createLoadingState.payload;
     },
 
-    removeTaskFromList(state: TaskState, _taskId: PayloadAction<number>) {
-      console.log(state.taskList, _taskId.payload);
-
+    setExpandedAccordion(state: TaskState, _accordionPanel: PayloadAction<AccordionPanel>) {
+      state.expandedAccordion = _accordionPanel.payload;
     },
   },
 });
@@ -130,6 +134,7 @@ export const {
   setSubjectList,
   setCategoryList,
   setCreateLoadingState,
+  setExpandedAccordion,
 } = createTaskSlice.actions;
 
 export const selectTaskList = (state: RootState) => state.task.taskList;
@@ -149,5 +154,7 @@ export const selectInputCategoryId = (state: RootState) => state.task.inputCateg
 export const selectInputComment = (state: RootState) => state.task.inputComment;
 
 export const selectCreateLoadingState = (state: RootState) => state.task.createLoadingState;
+
+export const selectExpandedAccordion = (state: RootState) => state.task.expandedAccordion;
 
 export default createTaskSlice.reducer;
