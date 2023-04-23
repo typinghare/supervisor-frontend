@@ -20,10 +20,9 @@ root.render(
 
 
 let domain;
-// domain = 'localhost';
 domain = 'jameschan.us';
 
-axios.defaults.baseURL = `http://${domain}:3000`;
+axios.defaults.baseURL = `//${domain}/supervisor/api`;
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(space-console.log))

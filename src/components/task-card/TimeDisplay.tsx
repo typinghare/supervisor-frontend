@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Box, BoxProps } from '@mui/material';
+import { padStart } from 'lodash';
 
 export interface TimeDisplayProps extends BoxProps {
   // the time to be shown
@@ -20,8 +21,8 @@ export const TimeDisplay: FunctionComponent<TimeDisplayProps> = (props) => {
       const minute = date.getMinutes();
 
       return [
-        hour < 10 ? `0${hour}` : `${hour}`,
-        minute < 10 ? `0${minute}` : `${minute}`,
+        padStart(hour.toString(), 2, '0'),
+        padStart(minute.toString(), 2, '0'),
       ];
     }
 

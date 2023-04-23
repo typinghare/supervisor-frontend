@@ -5,10 +5,6 @@ import { localUser } from '../common/local-user';
 import { api } from '../common/api-manager';
 import TaskVo from '../vo/task.vo';
 
-export namespace API {
-
-}
-
 export function updateTaskStage(taskId: number, action: Action): Promise<TaskVo> {
   return api(() => axios.put(`supervisor/tasks/${taskId}`, { action }, { headers: localUser.generalRequestHeader() }));
 }
