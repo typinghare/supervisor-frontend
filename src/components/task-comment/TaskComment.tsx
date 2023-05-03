@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { LoadingState } from '../../common/enum';
 import { TaskCommentVo } from '../../vo/TaskCommentVo';
 import { fetchComments } from '../../api/task-comment.api';
-import TaskCommentCard from './TaskCommentCard';
+import { TaskCommentCard } from './TaskCommentCard';
 import { Button } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -42,7 +42,7 @@ export default class TaskComment extends Component<TaskCommentProps, TaskComment
         <Button
           variant='text'
           startIcon={<AddIcon />}
-          sx={{ color: '#ffac33'}}
+          sx={{ color: '#ffac33' }}
         >
           Add
         </Button>
@@ -55,7 +55,7 @@ export default class TaskComment extends Component<TaskCommentProps, TaskComment
     return (
       <>
         {commentList.map((comment) => (
-          <TaskCommentCard comment={comment} key={comment.id}></TaskCommentCard>
+          <TaskCommentCard {...comment} key={comment.id}></TaskCommentCard>
         ))}
       </>
     );
